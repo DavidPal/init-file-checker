@@ -19,7 +19,7 @@ from typing import Iterable
 from typing import List
 from typing import Set
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 
 def die(error_code: int, message: str = ""):
