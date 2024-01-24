@@ -208,6 +208,19 @@ files = [
 flake8 = ">=5.0"
 
 [[package]]
+name = "flake8-quotes"
+version = "3.3.2"
+description = "Flake8 lint for quotes."
+optional = false
+python-versions = "*"
+files = [
+    {file = "flake8-quotes-3.3.2.tar.gz", hash = "sha256:6e26892b632dacba517bf27219c459a8396dcfac0f5e8204904c5a4ba9b480e1"},
+]
+
+[package.dependencies]
+flake8 = "*"
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 description = "brain-dead simple config-ini parsing"
@@ -343,13 +356,13 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.4)", "pytest-co
 
 [[package]]
 name = "pluggy"
-version = "1.3.0"
+version = "1.4.0"
 description = "plugin and hook calling mechanisms for python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pluggy-1.3.0-py3-none-any.whl", hash = "sha256:d89c696a773f8bd377d18e5ecda92b7a3793cbe66c87060a6fb58c7b6e1061f7"},
-    {file = "pluggy-1.3.0.tar.gz", hash = "sha256:cf61ae8f126ac6f7c451172cf30e3e43d3ca77615509771b3a984a0730651e12"},
+    {file = "pluggy-1.4.0-py3-none-any.whl", hash = "sha256:7db9f7b503d67d1c5b95f59773ebb58a8c1c288129a88665838012cfb07b8981"},
+    {file = "pluggy-1.4.0.tar.gz", hash = "sha256:8c85c2876142a764e5b7548e7d9a0e0ddb46f5185161049a79b7e974454223be"},
 ]
 
 [package.extras]
@@ -532,4 +545,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.5"
-content-hash = "e4ecd90a1d8323bdda2284e0c2351d6e02e4bd087c4fdebf9218f9887b5d1e78"
+content-hash = "befc2a2aeb6126944b5988c26e2fd819ac5a2427213d3756fff8145c0d76e199"
