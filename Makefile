@@ -1,7 +1,7 @@
 .PHONY: whitespace-format-check whitespace-format black-check black-format pydocstyle pylint flake8 isort-check isort-format mypy test coverage clean install-python create-environment delete-environment install-dependencies build-package publish-to-pypi publish-to-test-pypi
 
 PYTHON_ENVIRONMENT = "init_file_checker"
-PYTHON_VERSION = "3.7.5"
+PYTHON_VERSION = "3.8.5"
 SOURCE_FILES = *.py
 
 whitespace-format-check:
