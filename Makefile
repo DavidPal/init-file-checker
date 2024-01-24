@@ -56,6 +56,12 @@ mypy:
 	# Check type hints.
 	mypy --config-file "mypy.ini" --exclude ".*_pb2.py$$|.*_rpc.py$$|.*_twirp.py$$" $(SOURCE_FILES)
 
+# Run all code formatting checks.
+lint: whitespace-format-check black-check pydocstyle pylint ruff flake8 isort-check mypy poetry-check
+
+# Run all code reformatting.
+lint-format: whitespace-format black-format isort-format
+
 test:
 	# Run unit tests.
 	pytest --verbose ./
@@ -102,3 +108,7 @@ publish-to-pypi:
 publish-to-test-pypi:
 	# Publish package to Test-PyPI.
 	poetry publish -r test-pypi
+
+poetry-check:
+	# Check if poetry.lock is consistent with pyproject.toml file.
+	poetry check --lock
