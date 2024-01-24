@@ -14,7 +14,7 @@ classifiers = [
 ]
 
 [tool.poetry.scripts]
-whitespace-format = "init_file_checker:main"
+init-file-checker = "init_file_checker:main"
 
 [tool.poetry.dependencies]
 python = "^3.7.2"
