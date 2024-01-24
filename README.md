@@ -7,16 +7,21 @@ Tool that ensures that `__init__.py` files are not missing.
 ## Installation
 
 ```shell
-pip install whitespace-format
+pip install init-file-checker
 ```
 
 Installation requires Python 3.8.5 or higher.
 
 ## Usage
 
-A sample command that checks presence of `__init__.py` files:
+A sample command that checks presence of `__init__.py` files is:
 ```shell
 init-file-checker my_project/
+```
+
+If you want to add missing `__init__.py` files, add `--add-missing` option:
+```shell
+init-file-checker --add-missing my_project/
 ```
 
 ## License
