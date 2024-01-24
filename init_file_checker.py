@@ -46,7 +46,7 @@ def parse_command_line() -> argparse.Namespace:
         default=False,
     )
     parser.add_argument(
-        "input_directories", help="List of input directories", nargs="+", default=[], type=str
+        "input_directories", help="List of directories", nargs="+", default=[], type=str
     )
     parsed_arguments = parser.parse_args()
     return parsed_arguments
@@ -80,7 +80,6 @@ def parent_directories(file_name: str, base_directory: str) -> List[str]:
 
 def find_all_subdirectories(file_names: List[str], base_directory: str) -> Set[str]:
     """Finds missing '__init__.py' files."""
-    print(f"file_names = {file_names}, base_directory='{base_directory}' ... ")
     return {
         directory
         for file_name in file_names
@@ -92,12 +91,8 @@ def find_missing_init_files(directories: Iterable[str]) -> List[str]:
     """Finds missing '__init__.py' files in a list of directories."""
     missing_files = []
     for directory in directories:
-        if not directory:
-            init_file_name = "__init__.py"
-        else:
-            init_file_name = directory + "/" + "__init__.py"
+        init_file_name = directory + "/" + "__init__.py"
         if not pathlib.Path(init_file_name).is_file():
-            print(f"Missing file '{init_file_name}'.")
             missing_files.append(init_file_name)
     return missing_files
 
@@ -112,17 +107,28 @@ def main():
     """Finds missing '__init__.py' files and, optionally, adds the missing files."""
     parsed_arguments = parse_command_line()
 
+    # Find directories containing *.py files.
     directories_to_check: Set[str] = set()
     for input_directory in parsed_arguments.input_directories:
+        # Resolve full path of each directory.
         base_directory = str(pathlib.Path(input_directory).resolve())
         if not pathlib.Path(base_directory).is_dir():
             die(2, f"'{input_directory}' is not a directory.")
+
         python_files = find_all_python_files_recursively(base_directory)
-        for directory in find_all_subdirectories(python_files, base_directory):
-            directories_to_check.add(directory)
+        subdirectories = find_all_subdirectories(python_files, base_directory)
+        directories_to_check.update(subdirectories)
+
+    # Find the list of missing __init__.py files.
     missing_files = find_missing_init_files(directories_to_check)
+
+    # Report errors and exit.
     if missing_files and not parsed_arguments.add_missing:
+        for file_name in missing_files:
+            print(f"Missing file '{file_name}'.")
         die(1)
+
+    # Create missing files.
     if parsed_arguments.add_missing:
         create_missing_init_files(missing_files)
 
