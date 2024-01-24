@@ -70,19 +70,12 @@ def parent_directories(file_name: str) -> List[str]:
     """List parent directories of a relative or absolute path of a file."""
     parts = file_name.split("/")
     root_prefix = "/" if file_name.startswith("/") else ""
-    return [
-        root_prefix + "/".join(parts[:i])
-        for i in range(len(parts))
-    ]
+    return [root_prefix + "/".join(parts[:i]) for i in range(len(parts))]
 
 
 def find_all_directories(file_names: List[str]) -> Set[str]:
     """Finds missing '__init__.py' files."""
-    return {
-        directory
-        for file_name in file_names
-        for directory in parent_directories(file_name)
-    }
+    return {directory for file_name in file_names for directory in parent_directories(file_name)}
 
 
 def find_missing_init_files(directories: Iterable[str]) -> List[str]:
