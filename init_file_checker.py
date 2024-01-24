@@ -67,23 +67,23 @@ def find_all_python_files_recursively(path: str) -> List[str]:
     return []
 
 
-def parent_directories(file_name: str, base_directory: str) -> List[str]:
+def find_parent_directories(file_name: str, base_directory: str) -> Set[str]:
     """List parent directories of file starting with a base directory."""
     parts = file_name.split("/")
-    directories = []
+    directories: Set[str] = set()
     for i in range(len(parts)):
-        directory = "/".join(parts[:i])
+        directory = "/".join(parts[:i]) + "/"
         if directory.startswith(base_directory):
-            directories.append(directory)
+            directories.add(directory)
     return directories
 
 
-def find_all_subdirectories(file_names: List[str], base_directory: str) -> Set[str]:
+def find_all_parent_directories(file_names: List[str], base_directory: str) -> Set[str]:
     """Finds missing '__init__.py' files."""
     return {
         directory
         for file_name in file_names
-        for directory in parent_directories(file_name, base_directory)
+        for directory in find_parent_directories(file_name, base_directory)
     }
 
 
@@ -91,7 +91,7 @@ def find_missing_init_files(directories: Iterable[str]) -> List[str]:
     """Finds missing '__init__.py' files in a list of directories."""
     missing_files = []
     for directory in directories:
-        init_file_name = directory + "/" + "__init__.py"
+        init_file_name = str(pathlib.Path(directory + "/" + "__init__.py").resolve())
         if not pathlib.Path(init_file_name).is_file():
             missing_files.append(init_file_name)
     return missing_files
@@ -116,8 +116,8 @@ def main():
             die(2, f"'{input_directory}' is not a directory.")
 
         python_files = find_all_python_files_recursively(base_directory)
-        subdirectories = find_all_subdirectories(python_files, base_directory)
-        directories_to_check.update(subdirectories)
+        parent_directories = find_all_parent_directories(python_files, base_directory)
+        directories_to_check.update(parent_directories)
 
     # Find the list of missing __init__.py files.
     missing_files = find_missing_init_files(directories_to_check)
