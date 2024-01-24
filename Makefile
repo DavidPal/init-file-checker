@@ -12,7 +12,7 @@ whitespace-format-check:
 			--remove-trailing-empty-lines \
 			--normalize-non-standard-whitespace replace \
 			--normalize-whitespace-only-files empty \
-			--exclude "\.pyc$$|\.git/|\.idea/"  .
+			--exclude ".pyc$$|venv/|^.git/|^.idea|^.coverage$$|^.pytest_cache/|^.mypy_cache/|^pytest_results/|^.ruff_cache/"  .
 
 whitespace-format:
 	# Reformat code.
@@ -22,7 +22,7 @@ whitespace-format:
 			--remove-trailing-empty-lines \
 			--normalize-non-standard-whitespace replace \
 			--normalize-whitespace-only-files empty \
-			--exclude "\.pyc$$|^\.git/|^\.idea/"  .
+			--exclude ".pyc$$|venv/|^.git/|^.idea|^.coverage$$|^.pytest_cache/|^.mypy_cache/|^pytest_results/|^.ruff_cache/"  .
 
 black-check:
 	# Check code formatting.
@@ -78,7 +78,7 @@ coverage:
 
 clean:
 	# Remove temporary files.
-	rm -rf logs/*.log  pytest_results/  .coverage *.egg-info/  dist/
+	rm -rf logs/*.log  pytest_results/  .ruff_cache/ .coverage *.egg-info/  dist/
 	find . -name "__pycache__" -prune -exec rm -rf {} \;
 	find . -name ".pytest_cache" -prune -exec rm -rf {} \;
 	find . -name ".mypy_cache" -prune -exec rm -rf {} \;
