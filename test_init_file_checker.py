@@ -28,10 +28,7 @@ class TestInitFileChecker(unittest.TestCase):
 
     def test_dummy(self):
         """Tests equality of Lines."""
-        self.assertEqual(
-            2,
-            1 + 1,
-        )
+        self.assertEqual(2, 1 + 1)
 
 
 if __name__ == "__main__":
