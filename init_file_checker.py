@@ -100,6 +100,7 @@ def find_missing_init_files(directories: Iterable[str]) -> List[str]:
 def create_missing_init_files(file_names: List[str]):
     """Creates missing '__init__.py' files."""
     for file_name in file_names:
+        print(f"Creating empty file '{file_name}' ...")
         pathlib.Path(file_name).touch()
 
 
@@ -122,15 +123,20 @@ def main():
     # Find the list of missing __init__.py files.
     missing_files = find_missing_init_files(directories_to_check)
 
+    # Success.
+    if not missing_files:
+        die(0, "No missing __init__.py files.")
+
+    # Create missing files.
+    if parsed_arguments.add_missing:
+        create_missing_init_files(missing_files)
+        die(0)
+
     # Report errors and exit.
     if missing_files and not parsed_arguments.add_missing:
         for file_name in missing_files:
             print(f"Missing file '{file_name}'.")
         die(1)
-
-    # Create missing files.
-    if parsed_arguments.add_missing:
-        create_missing_init_files(missing_files)
 
 
 if __name__ == "__main__":
