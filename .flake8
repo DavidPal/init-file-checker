@@ -1,3 +1,14 @@
 [flake8]
-max-line-length = 200
-extend-ignore = E203
+
+# Do not enforce line length. It is enforced by pylint.
+# This avoids putting two directives for long lines.
+max-line-length = 999
+
+# These rules conflict with Black.
+ignore = E203
+
+# Enforce double quotes using flakes8-quotes plugin.
+inline-quotes = double
+multiline-quotes = double
+docstring-quotes = double
+avoid-escape = False

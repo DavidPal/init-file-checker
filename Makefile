@@ -40,6 +40,10 @@ pylint:
 	# Static code analysis.
 	pylint --output-format=colorized --ignore-patterns="_pb2.py,_rpc.py,_twirp.py" --rcfile=pylintrc $(SOURCE_FILES)
 
+ruff:
+	# Static code analysis using ruff.
+	ruff check $(SOURCE_FILES)
+
 flake8:
 	# Check PEP8 code style.
 	flake8 --color=always --exclude="*_pb2.py,*_rpc.py,*_twirp.py" $(SOURCE_FILES)
@@ -96,6 +100,9 @@ delete-environment:
 install-dependencies:
 	# Install all dependencies.
 	poetry install --verbose
+
+	# Force pyenv to re-index the commands available in the virtual environment.
+	pyenv rehash
 
 build-package:
 	# Build a wheel package.
