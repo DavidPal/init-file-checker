@@ -1,5 +1,7 @@
 # `__init__` file checker
 
+[![Build, lint and test](https://github.com/DavidPal/init-file-checker/actions/workflows/build.yaml/badge.svg)](https://github.com/DavidPal/init-file-checker/actions/workflows/build.yaml)
+
 Tool that ensures that `__init__.py` files are not missing.
 
 ## Installation
