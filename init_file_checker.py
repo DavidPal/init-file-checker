@@ -3,7 +3,7 @@
 """Checker of __init__.py files.
 
 Author: David Pal <davidko.pal@gmail.com>
-Date: 2023 - 2025
+Date: 2024 - 2025
 License: MIT License
 
 Usage:
@@ -20,7 +20,24 @@ from typing import Iterable
 from typing import List
 from typing import Set
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
+
+# Whitespace characters
+CARRIAGE_RETURN = "\r"
+LINE_FEED = "\n"
+SPACE = " "
+TAB = "\t"
+VERTICAL_TAB = "\v"
+FORM_FEED = "\f"
+
+WHITESPACE_CHARACTERS = {
+    CARRIAGE_RETURN,
+    LINE_FEED,
+    SPACE,
+    TAB,
+    VERTICAL_TAB,
+    FORM_FEED,
+}
 
 
 def die(error_code: int, message: str = "") -> None:
@@ -47,6 +64,20 @@ def parse_command_line() -> argparse.Namespace:
         default=False,
     )
     parser.add_argument(
+        "--report-useless",
+        help="Report unnecessary __init__.py files.",
+        required=False,
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
+        "--delete-useless",
+        help="Delete unnecessary __init__.py files.",
+        required=False,
+        action="store_true",
+        default=False,
+    )
+    parser.add_argument(
         "input_directories",
         help="List of directories",
         nargs="+",
@@ -54,6 +85,27 @@ def parse_command_line() -> argparse.Namespace:
         type=str,
     )
     return parser.parse_args()
+
+
+def read_file_content(file_name: str, encoding: str) -> str:
+    """Reads content of a file.
+
+    New line markers are preserved in their original form.
+    """
+    try:
+        with open(file_name, "r", encoding=encoding, newline="") as file:
+            return file.read()
+    except IOError as exception:
+        die(2, f"Cannot read file '{file_name}': {exception}")
+    except UnicodeError as exception:
+        die(3, f"Cannot decode file '{file_name}': {exception}")
+    return ""
+
+
+def file_is_whitespace(filename: str) -> bool:
+    """Checks if a file consists only of whitespace."""
+    text = read_file_content(filename, encoding="utf-8")
+    return all(char in WHITESPACE_CHARACTERS for char in text)
 
 
 def find_all_python_files_recursively(path: str) -> List[str]:
@@ -101,19 +153,42 @@ def find_missing_init_files(directories: Iterable[str]) -> List[str]:
     return missing_files
 
 
-def create_missing_init_files(file_names: List[str]) -> None:
+def find_useless_init_files(directories: Iterable[str]) -> List[str]:
+    """Finds existing '__init__.py' files in a list of directories."""
+    existing_init_files = []
+    for directory in directories:
+        init_file_name = str(pathlib.Path(directory + "/" + "__init__.py").resolve())
+        if pathlib.Path(init_file_name).is_file():
+            existing_init_files.append(init_file_name)
+    return existing_init_files
+
+
+def create_init_files(file_names: List[str]) -> None:
     """Creates missing '__init__.py' files."""
     for file_name in file_names:
         print(f"Creating empty file '{file_name}' ...")
         pathlib.Path(file_name).touch()
 
 
+def delete_init_files(file_names: List[str]) -> None:
+    """Deletes '__init__.py' files."""
+    for file_name in file_names:
+        print(f"Deleting useless file '{file_name}' ...")
+        pathlib.Path(file_name).unlink()
+
+
 def main() -> None:
     """Finds missing '__init__.py' files and, optionally, adds the missing files."""
     parsed_arguments = parse_command_line()
 
+    if parsed_arguments.report_useless and (
+        parsed_arguments.add_missing or parsed_arguments.delete_missing
+    ):
+        die(1, "The option --report-useless cannot be combined with other options.")
+
     # Find directories containing *.py files.
-    directories_to_check: Set[str] = set()
+    directories_that_must_have_init_files: Set[str] = set()
+    directories_that_do_not_need_init_files: Set[str] = set()
     for input_directory in parsed_arguments.input_directories:
         # Resolve full path of each directory.
         base_directory = str(pathlib.Path(input_directory).resolve())
@@ -121,26 +196,53 @@ def main() -> None:
             die(2, f"'{input_directory}' is not a directory.")
 
         python_files = find_all_python_files_recursively(base_directory)
-        parent_directories = find_all_parent_directories(python_files, base_directory)
-        directories_to_check.update(parent_directories)
+        non_empty_python_files = [
+            file_path for file_path in python_files if file_path is file_is_whitespace(file_path)
+        ]
+        parent_directories_for_non_empty_files = find_all_parent_directories(
+            python_files,
+            base_directory,
+        )
+        parent_directories_for_all_files = find_all_parent_directories(
+            non_empty_python_files,
+            base_directory,
+        )
+        difference = parent_directories_for_all_files.difference(
+            parent_directories_for_non_empty_files,
+        )
+        directories_that_do_not_need_init_files.update(difference)
+        directories_that_must_have_init_files.update(parent_directories_for_non_empty_files)
 
     # Find the list of missing __init__.py files.
-    missing_files = find_missing_init_files(directories_to_check)
+    missing_files = find_missing_init_files(directories_that_must_have_init_files)
 
-    # Success.
-    if not missing_files:
-        die(0, "No missing __init__.py files.")
+    # Find the list of useless __init__.py files.
+    if parsed_arguments.report_useless or parsed_arguments.delete_useless:
+        useless_files = find_useless_init_files(directories_that_do_not_need_init_files)
+    else:
+        useless_files = []
 
-    # Create missing files.
-    if parsed_arguments.add_missing:
-        create_missing_init_files(missing_files)
-        die(0)
-
-    # Report errors and exit.
-    if missing_files and not parsed_arguments.add_missing:
+    if parsed_arguments.add_missing or parsed_arguments.delete_useless:
+        # Create missing __init__.py files and/or delete useless __init__.py files.
+        if parsed_arguments.add_missing:
+            create_init_files(missing_files)
+        if parsed_arguments.delete_useless:
+            delete_init_files(missing_files)
+    else:
+        # Report errors and exit.
         for file_name in missing_files:
             print(f"Missing file '{file_name}'.")
-        die(1)
+        if not missing_files:
+            print("No missing __init__.py files.")
+
+        if parsed_arguments.report_useless:
+            for file_name in useless_files:
+                print(f"Useless file '{file_name}'.")
+            if not useless_files:
+                print("No unnecessary __init__.py files.")
+
+        if missing_files or useless_files:
+            die(1)
 
 
 if __name__ == "__main__":
