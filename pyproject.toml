@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "init-file-checker"
-version = "0.0.2"
+version = "0.0.3"
 description = "Checker of __init__.py files in Python projects"
 license = "MIT"
 authors = ["David Pal <davidko.pal@gmail.com>"]
