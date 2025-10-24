@@ -27,7 +27,7 @@ flake8-quotes = "^3.3.2"
 mypy = "^1.13.0"
 pydocstyle = {extras = ["toml"], version = "^6.3.0"}
 pytest = "^8.3.5"
-pylint = "^3.2.7"
+pylint = "~3.0.3"
 ruff = "^0.14.2"
 whitespace-format = "^0.0.10"
 
