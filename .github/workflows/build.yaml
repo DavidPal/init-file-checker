@@ -40,12 +40,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip --verbose install poetry==1.7.1
+          pip --verbose install poetry==1.8.5
           poetry config virtualenvs.create false
           poetry install --verbose
 
       - name: Lint and test code
         run: |
-          make clean lint test coverage
+          make clean check-poetry lint test coverage
 
       - run: echo "This job's status is ${{ job.status }}."

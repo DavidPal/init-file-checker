@@ -3,7 +3,8 @@
 """Checker of __init__.py files.
 
 Author: David Pal <davidko.pal@gmail.com>
-Date: 2024
+Date: 2023 - 2025
+License: MIT License
 
 Usage:
 
@@ -22,7 +23,7 @@ from typing import Set
 VERSION = "0.0.2"
 
 
-def die(error_code: int, message: str = ""):
+def die(error_code: int, message: str = "") -> None:
     """Exits the script."""
     if message:
         print(message)
@@ -46,10 +47,13 @@ def parse_command_line() -> argparse.Namespace:
         default=False,
     )
     parser.add_argument(
-        "input_directories", help="List of directories", nargs="+", default=[], type=str
+        "input_directories",
+        help="List of directories",
+        nargs="+",
+        default=[],
+        type=str,
     )
-    parsed_arguments = parser.parse_args()
-    return parsed_arguments
+    return parser.parse_args()
 
 
 def find_all_python_files_recursively(path: str) -> List[str]:
@@ -97,14 +101,14 @@ def find_missing_init_files(directories: Iterable[str]) -> List[str]:
     return missing_files
 
 
-def create_missing_init_files(file_names: List[str]):
+def create_missing_init_files(file_names: List[str]) -> None:
     """Creates missing '__init__.py' files."""
     for file_name in file_names:
         print(f"Creating empty file '{file_name}' ...")
         pathlib.Path(file_name).touch()
 
 
-def main():
+def main() -> None:
     """Finds missing '__init__.py' files and, optionally, adds the missing files."""
     parsed_arguments = parse_command_line()
 
