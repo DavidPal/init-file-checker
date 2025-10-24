@@ -171,6 +171,7 @@ def create_init_files(file_names: List[str]) -> None:
 
 
 def delete_init_files(file_names: List[str]) -> None:
+    """Deletes '__init__.py' files."""
     for file_name in file_names:
         print(f"Deleting useless file '{file_name}' ...")
         pathlib.Path(file_name).unlink()
@@ -199,13 +200,15 @@ def main() -> None:
             file_path for file_path in python_files if file_path is file_is_whitespace(file_path)
         ]
         parent_directories_for_non_empty_files = find_all_parent_directories(
-            python_files, base_directory
+            python_files,
+            base_directory,
         )
         parent_directories_for_all_files = find_all_parent_directories(
-            non_empty_python_files, base_directory
+            non_empty_python_files,
+            base_directory,
         )
         difference = parent_directories_for_all_files.difference(
-            parent_directories_for_non_empty_files
+            parent_directories_for_non_empty_files,
         )
         directories_that_do_not_need_init_files.update(difference)
         directories_that_must_have_init_files.update(parent_directories_for_non_empty_files)
