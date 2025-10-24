@@ -702,6 +702,18 @@ files = [
 ]
 
 [[package]]
+name = "whitespace-format"
+version = "0.0.10"
+description = "Linter and formatter of whitespace in source code files and text files"
+optional = false
+python-versions = "<4.0.0,>=3.8.0"
+groups = ["dev"]
+files = [
+    {file = "whitespace_format-0.0.10-py3-none-any.whl", hash = "sha256:4a45309fa3e9624102347c2f68ae97b0f8033270d7d63e00826ec4d3fd83b39f"},
+    {file = "whitespace_format-0.0.10.tar.gz", hash = "sha256:d3061bb3a41387fa90412968e848dc83c81fcdd30c75d69b9c4e88790dbdfbca"},
+]
+
+[[package]]
 name = "wrapt"
 version = "1.17.3"
 description = "Module for decorators, wrappers and monkey patching."
@@ -795,4 +807,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.8.5"
-content-hash = "0ebca318d761bb72b6d43a973ceb0bedf4f3b962b9b3819a035a8336f13a3679"
+content-hash = "bb16f43a78b82e54b7002107d19f48ab7c0687d0f645157130f8885265225647"
