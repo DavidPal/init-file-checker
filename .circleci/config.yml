@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: Lint and test code
-          command: make clean check-poetry lint test coverage
+          command: make clean poetry-check lint test coverage
 
 workflows:
   test_my_app:
