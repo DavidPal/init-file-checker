@@ -49,7 +49,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 ignore-vcs = true
-only-include = ["init_file_checker.py"]
 
 [tool.uv]
 package = true
@@ -98,6 +97,7 @@ select = ["ALL"]
 ignore = [
     "C901",
     "CPY001",
+    "D104",
     "D301",
     "E501",
     "EM101",

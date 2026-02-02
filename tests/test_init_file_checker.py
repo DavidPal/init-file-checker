@@ -7,7 +7,7 @@ from typing import Optional
 
 from init_file_checker import init_file_checker
 
-CURRENT_DIRECTORY_FULL_PATH = str(pathlib.Path(__file__).parent.parent.resolve())
+PROJECT_ROOT_DIRECTORY_FULL_PATH = str(pathlib.Path(__file__).parent.parent.resolve())
 
 
 def extract_version_from_pyproject() -> Optional[str]:
@@ -57,16 +57,15 @@ class TestInitFileChecker(unittest.TestCase):
             init_file_checker.find_parent_directories("/path/to/some/file.txt", "/path/to/some/"),
         )
 
-    @unittest.skip("This test is currently broken")
     def test_find_all_python_files_recursively(self) -> None:
         """Tests find_all_python_files_recursively() function."""
         self.assertEqual(
             [
-                CURRENT_DIRECTORY_FULL_PATH + "/__init__.py",
-                CURRENT_DIRECTORY_FULL_PATH + "/init_file_checker.py",
+                PROJECT_ROOT_DIRECTORY_FULL_PATH + "/init_file_checker/__init__.py",
+                PROJECT_ROOT_DIRECTORY_FULL_PATH + "/init_file_checker/init_file_checker.py",
             ],
             init_file_checker.find_all_python_files_recursively(
-                f"{CURRENT_DIRECTORY_FULL_PATH}/init_file_checker/",
+                f"{PROJECT_ROOT_DIRECTORY_FULL_PATH}/init_file_checker/",
             ),
         )
 
@@ -87,15 +86,16 @@ class TestInitFileChecker(unittest.TestCase):
             ),
         )
 
-    @unittest.skip("This test is currently broken")
     def test_find_missing_init_files(self) -> None:
         """Tests find_missing_init_files() function."""
         self.assertListEqual(
             [
-                CURRENT_DIRECTORY_FULL_PATH + "/__init__.py",
-                CURRENT_DIRECTORY_FULL_PATH + "/.github/__init__.py",
+                PROJECT_ROOT_DIRECTORY_FULL_PATH + "/__init__.py",
+                PROJECT_ROOT_DIRECTORY_FULL_PATH + "/.github/__init__.py",
             ],
-            init_file_checker.find_missing_init_files([CURRENT_DIRECTORY_FULL_PATH, ".github/"]),
+            init_file_checker.find_missing_init_files(
+                [PROJECT_ROOT_DIRECTORY_FULL_PATH, ".github/"],
+            ),
         )
 
 
