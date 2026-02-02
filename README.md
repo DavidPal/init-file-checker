@@ -10,7 +10,7 @@ Tool that ensures that `__init__.py` files are not missing. Various Python tools
 pip install init-file-checker
 ```
 
-Installation requires Python 3.8.5 or higher.
+Installation requires Python 3.8.0 or higher.
 
 ## Usage
 
