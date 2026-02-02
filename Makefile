@@ -1,8 +1,5 @@
-PYTHON_ENVIRONMENT = "init_file_checker"
-PYTHON_VERSION = "3.8.5"
-SOURCE_FILES = *.py
-
-NON_TEXT_FILES_REGEX = "\.pyc$$|\.git/|\.idea/|test_data/|^\.coverage$$|^\.mypy_cache/|^.pytest_cache/|^.ruff_cache/"
+SOURCE_FILES = init_file_checker/ tests/
+NON_TEXT_FILES_REGEX = "\.pyc$$|\.git/|\.idea/|^\.venv/|^test_data/|^\.coverage$$|^\.mypy_cache/|^.pytest_cache/|^.ruff_cache/"
 
 .PHONY: \
 	whitespace-format-check \
@@ -26,7 +23,7 @@ NON_TEXT_FILES_REGEX = "\.pyc$$|\.git/|\.idea/|test_data/|^\.coverage$$|^\.mypy_
 	build-package \
 	publish-to-pypi \
 	publish-to-test-pypi \
-	poetry-check
+	check-lock-file \
 
 whitespace-format-check:
 	# Check whitespace formatting.
@@ -67,7 +64,7 @@ ruff-format:
 
 pydocstyle:
 	# Check docstrings
-	python -m pydocstyle --verbose --explain --source --count $(SOURCE_FILES)
+	pydocstyle --verbose --explain --source --count $(SOURCE_FILES)
 
 ruff:
 	# Check code style with ruff.
@@ -87,9 +84,9 @@ pylint:
 
 mypy:
 	# Check type hints.
-	mypy --config-file "mypy.ini" --exclude ".*_pb2.py$$|.*_rpc.py$$|.*_twirp.py$$" $(SOURCE_FILES)
+	mypy --exclude ".*_pb2.py$$|.*_rpc.py$$|.*_twirp.py$$" $(SOURCE_FILES)
 
-lint: whitespace-format-check ruff-format-check pydocstyle ruff flake8 pylint mypy
+lint: check-lock-file whitespace-format-check ruff-format-check pydocstyle ruff flake8 pylint mypy
 
 test:
 	# Run unit tests.
@@ -110,37 +107,32 @@ clean:
 
 install-python:
 	# Install the correct version of python.
-	pyenv install $(PYTHON_VERSION)
+	uv python install --managed-python
 
 create-environment:
 	# Create virtual environment.
-	pyenv virtualenv $(PYTHON_VERSION) $(PYTHON_ENVIRONMENT)
-	pyenv local $(PYTHON_ENVIRONMENT)
-	pip install --upgrade pip
+	uv venv --clear --managed-python
 
 delete-environment:
 	# Delete virtual environment.
-	pyenv virtualenv-delete $(PYTHON_ENVIRONMENT)
-	pyenv local --unset
-	rm -rf .python-version
+	rm -rf .venv/
 
 install-dependencies:
 	# Install all dependencies.
-	poetry install --verbose
-	pyenv rehash
+	uv sync --locked --all-extras --dev
 
 build-package:
 	# Build a wheel package.
-	poetry build
+	uv build --clear
 
 publish-to-pypi:
 	# Publish package to PyPI.
-	poetry publish
+	uv publish --index pypi
 
 publish-to-test-pypi:
 	# Publish package to Test-PyPI.
-	poetry publish -r test-pypi
+	uv publish --index test-pypi
 
-poetry-check:
-	# Check if poetry.lock is consistent with pyproject.toml file.
-	poetry check --lock
+check-lock-file:
+	# Check if uv.lock is consistent with pyproject.toml file.
+	uv lock --check

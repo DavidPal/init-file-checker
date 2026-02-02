@@ -3,7 +3,7 @@
 """Checker of __init__.py files.
 
 Author: David Pal <davidko.pal@gmail.com>
-Date: 2023 - 2025
+Date: 2023 - 2026
 License: MIT License
 
 Usage:
@@ -20,7 +20,7 @@ from typing import Iterable
 from typing import List
 from typing import Set
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 
 
 def die(error_code: int, message: str = "") -> None:
