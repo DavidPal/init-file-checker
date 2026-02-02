@@ -41,7 +41,7 @@ dev = [
 ]
 
 [project.scripts]
-init-file-checker = "init_file_checker:main"
+init-file-checker = "init_file_checker.init_file_checker:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -49,6 +49,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build]
 ignore-vcs = true
+only-include = ["init_file_checker/"]
 
 [tool.uv]
 package = true
